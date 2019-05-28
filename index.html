@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>3D Rain Effect</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="src/styles.css" />
+    <script src="src/three.min.js"></script>
+  </head>
+  <body>
+    <script src="src/rain.js"></script>
+    <script>
+      new Rain({
+        target: document.querySelector('body'),
+        resources: {
+          cloud: './src/cloud.png',
+          drop: './src/drop.png',
+        },
+      });
+    </script>
+  </body>
+</html>
