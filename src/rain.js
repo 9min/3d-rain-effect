@@ -119,7 +119,7 @@ class Rain {
     });
   }
 
-  initCloud = () => {
+  initCloud() {
     const {
       size: { width, height },
       resources: { cloud },
@@ -164,7 +164,7 @@ class Rain {
     this.target.appendChild(this.renderer.domElement);
   }
 
-  animate = () => {
+  animate() {
     const {
       cloudParticles,
       rainGeometry,
@@ -227,6 +227,6 @@ class Rain {
 
     renderer.render(scene, camera);
     
-    requestAnimationFrame(this.animate);
+    requestAnimationFrame(() => this.animate());
   }
 }
