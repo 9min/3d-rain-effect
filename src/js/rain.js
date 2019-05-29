@@ -246,11 +246,10 @@ class Rain {
 
     rainGeometry.verticesNeedUpdate = true;
     rainGeometry.vertices.forEach((p) => {
-      const rangeX = { min: -20, max: 20 };
       const rangeY = { min: Math.random() * 200 - 340, max: 200 };
       const rangeZ = { min: -50, max: 10 };
 
-      p.velocity -= 0.1 + Math.random() * 0.1;
+      p.velocity -= 0.5 + Math.random() * 0.1;
 
       if (rangeZ.min < p.originalZ && p.originalZ < rangeZ.max) {
         p.y += p.velocity / 1.5;
@@ -262,25 +261,9 @@ class Rain {
         p.y = rangeY.max;
         p.velocity = 0;
       }
-
-      if (
-        p.originalZ < rangeZ.max &&
-        p.originalZ > rangeZ.min &&
-        p.originalX < rangeX.max &&
-        p.originalX > rangeX.min
-      ) {
-        if (p.x < 0) {
-          p.x -= 0.01;
-        }
-        p.x += 0.01;
-
-        if (p.x < rangeX.min || rangeX.max < p.x) {
-          p.x = p.originalX;
-        }
-      }
     });
 
-    if (isLightning || Math.random() > 0.8) {
+    if (isLightning || Math.random() > 0.9) {
       if (isLightning || pointLight.power < 100) {
         pointLight.position.set(
           Math.random() * 400,
@@ -288,7 +271,7 @@ class Rain {
           100,
         );
       }
-      pointLight.power = Math.random() * 500 + (isLightning ? 500 : 50);
+      pointLight.power = Math.random() * 400 + (isLightning ? 600 : 50);
     }
 
     renderer.render(scene, camera);
