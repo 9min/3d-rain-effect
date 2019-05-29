@@ -179,9 +179,9 @@ class Rain {
       const cloud = new THREE.Mesh(cloudGeometry, cloudMaterial);
 
       cloud.position.set(
-        Math.random() * (width + 400) - (width / 2) - 200,
+        Math.random() * (width + 200) - 100,
         400,
-        Math.random() * height - height,
+        Math.random() * (height + 300) - (height + 100),
       );
 
       cloud.rotation.x = 1.16;
@@ -242,17 +242,19 @@ class Rain {
     } = this;
     const isLightning = !!this.lightningTimer;
 
-    cloudParticles.forEach(v => v.rotation.z -= 0.002);
+    cloudParticles.forEach((v) => {
+      v.rotation.z -= 0.002;
+    });
 
     rainGeometry.verticesNeedUpdate = true;
     rainGeometry.vertices.forEach((p) => {
       const rangeY = { min: Math.random() * 200 - 340, max: 200 };
       const rangeZ = { min: -50, max: 10 };
 
-      p.velocity -= 0.5 + Math.random() * 0.1;
+      p.velocity -= 0.5;
 
       if (rangeZ.min < p.originalZ && p.originalZ < rangeZ.max) {
-        p.y += p.velocity / 1.5;
+        p.y += p.velocity / 2;
       } else {
         p.y += p.velocity;
       }
@@ -263,7 +265,7 @@ class Rain {
       }
     });
 
-    if (isLightning || Math.random() > 0.9) {
+    if (isLightning || Math.random() > 0.8) {
       if (isLightning || pointLight.power < 100) {
         pointLight.position.set(
           Math.random() * 400,
@@ -271,7 +273,7 @@ class Rain {
           100,
         );
       }
-      pointLight.power = Math.random() * 400 + (isLightning ? 600 : 50);
+      pointLight.power = Math.random() * 500 + (isLightning ? 500 : 50);
     }
 
     renderer.render(scene, camera);
