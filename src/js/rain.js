@@ -243,18 +243,19 @@ class Rain {
       const duration = audio.duration;
       const percent = currentTime / duration;
       
-      if (percent > 0.8) {
-        if (audio.volume > 0.5) {
-          audio.volume -= 0.01;
+      if (percent > 0.85) {
+        if (audio.volume > 0.3) {
+          audio.volume -= 0.005;
+        }
+        if (percent > 0.98 || audio.volume <= 0.3) {
+          audio.pause();
+          audio.currentTime = 0;
+          audio.play();
         }
       } else {
         if (audio.volume < 0.99) {
           audio.volume += 0.01;
         }
-      }
-
-      if (percent > 0.9) {
-        audio.currentTime = 5;
       }
     }
   }
