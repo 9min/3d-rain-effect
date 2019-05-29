@@ -41,9 +41,17 @@ button {
   position: absolute;
   top: 0;
   right: 0;
-  padding: 20px;
+}
+
+.btn_audio {
+  width: 70px;
+  padding: 10px;
 }
 
 .btn_audio.hide {
   display: none;
+}
+
+.img_audio {
+  width: 100%;
 }
