@@ -46,12 +46,26 @@ button {
 
 .btn_audio {
   width: 40px;
+  height: 40px;
+  text-indent: -9999px;
+  font-size: 1px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  overflow: hidden;
   -webkit-touch-callout:none;
   -webkit-user-select:none;
   -khtml-user-select:none;
   -moz-user-select:none;
   -ms-user-select:none;
   user-select:none;
+}
+
+.btn_audio.on {
+  background-image: url('../images/audio.png');
+}
+
+.btn_audio.off {
+  background-image: url('../images/mute.png');
 }
 
 .btn_audio.hide {
