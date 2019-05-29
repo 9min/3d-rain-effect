@@ -1,0 +1,49 @@
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  background: #000000;
+  overflow: hidden;
+}
+
+button {
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+  vertical-align: top;
+}
+
+.hidden {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.contents {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  max-width: 1000px;
+  max-height: 1000px;
+  overflow: hidden;
+}
+
+.button_wrap {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 10px;
+}
+
+.btn_audio.hide {
+  display: none;
+}

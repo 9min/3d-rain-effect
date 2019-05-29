@@ -1,11 +1,13 @@
 class Rain {
-  constructor({ target, resources: { cloud, drop } }) {
+  constructor({ target, resources: { cloud, drop, audio } }) {
     this.target = target;
     this.size = {
       width: Math.min(target.clientWidth, 1000),
       height: Math.min(target.clientHeight, 1000),
     };
-    this.resources = { cloud, drop };
+    this.resources = { cloud, drop, audio };
+    this.isMobile = false;
+    this.audio = null;
     this.cloudParticles = [];
     this.rainCount = null;
     this.scene = null;
@@ -17,11 +19,15 @@ class Rain {
     this.directionalLight = null;
     this.pointLight = null;
     this.renderer = null;
+    this.lightningTimer = null;
 
     this.init();
   }
 
   init() {
+    this.checkMobile();
+    this.initAudio();
+    this.initEvents();
     this.initRainCount();
     this.initScene();
     this.initCamera();
@@ -34,6 +40,44 @@ class Rain {
     this.initRenderer();
     this.appendDom();
     this.animate();
+  }
+
+  checkMobile() {
+    const mobileKeyWords = [
+      'iPhone',
+      'iPod',
+      'BlackBerry',
+      'Android',
+      'Windows CE',
+      'LG',
+      'MOT',
+      'SAMSUNG',
+      'SonyEricsson',
+      'Windows Phone',
+    ];
+
+    for (let word in mobileKeyWords) {
+      if (navigator.userAgent.match(mobileKeyWords[word])) {
+        this.isMobile = true;
+        return;
+      }
+    }
+  }
+
+  initAudio() {
+    const { audio } = this.resources;
+
+    this.audio = new Audio(audio);
+    this.audio.loop = true;
+    this.audio.load();
+  }
+
+  initEvents() {
+    this.target.addEventListener(this.isMobile
+      ? 'touchend'
+      : 'click',
+      () => this.lightning(),
+    );
   }
 
   initRainCount() {
@@ -90,8 +134,8 @@ class Rain {
     const rainGeometry = new THREE.Geometry();
 
     for (let i = 0, len = this.rainCount; i < len; i++) {
-      const randomX = Math.random() * 400 - 200;
-      const randomY = Math.random() * 500 - 250;
+      const randomX = Math.random() * 100 - 50;
+      const randomY = Math.random() * 400 - 200;
       const randomZ = Math.random() * 400 - 300;
       const rainDrop = new THREE.Vector3(randomX, randomY, randomZ);
 
@@ -124,7 +168,7 @@ class Rain {
       size: { width, height },
       resources: { cloud },
     } = this;
-    const cloudLength = Math.floor((width * height) / 20000);
+    const cloudLength = Math.floor((width * height) / 10000);
     const cloudGeometry = new THREE.PlaneBufferGeometry(400, 400);
     const cloudMaterial = new THREE.MeshLambertMaterial({
       map: this.loader.load(cloud),
@@ -135,10 +179,11 @@ class Rain {
       const cloud = new THREE.Mesh(cloudGeometry, cloudMaterial);
 
       cloud.position.set(
-        Math.random() * 800 - 400,
+        Math.random() * (width + 400) - (width / 2) - 200,
         400,
-        Math.random() * 500 - 450,
+        Math.random() * height - height,
       );
+
       cloud.rotation.x = 1.16;
       cloud.rotation.y = -0.12;
       cloud.rotation.z = Math.random() * 360;
@@ -164,6 +209,28 @@ class Rain {
     this.target.appendChild(this.renderer.domElement);
   }
 
+  mute(isMute) {
+    if (this.audio.currentTime === 0) {
+      const promise = this.audio.play();
+
+      if (!promise) {
+        promise
+          .then(() => this.audio.play())
+          .catch(err => console.error(err));
+      }
+    }
+
+    this.audio.muted = isMute ? true : false;
+  }
+
+  lightning() {
+    if (this.lightningTimer) {
+      clearTimeout(this.lightningTimer);
+    }
+
+    this.lightningTimer = setTimeout(() => this.lightningTimer = null, 1000);
+  }
+
   animate() {
     const {
       cloudParticles,
@@ -173,19 +240,20 @@ class Rain {
       scene,
       camera,
     } = this;
+    const isLightning = !!this.lightningTimer;
 
     cloudParticles.forEach(v => v.rotation.z -= 0.002);
 
     rainGeometry.verticesNeedUpdate = true;
     rainGeometry.vertices.forEach((p) => {
       const rangeX = { min: -20, max: 20 };
-      const rangeY = { min: -200, max: 200 };
+      const rangeY = { min: Math.random() * 200 - 340, max: 200 };
       const rangeZ = { min: -50, max: 10 };
 
-      p.velocity -= 0.05;
+      p.velocity -= 0.1 + Math.random() * 0.1;
 
       if (rangeZ.min < p.originalZ && p.originalZ < rangeZ.max) {
-        p.y += p.velocity / 2;
+        p.y += p.velocity / 1.5;
       } else {
         p.y += p.velocity;
       }
@@ -202,27 +270,25 @@ class Rain {
         p.originalX > rangeX.min
       ) {
         if (p.x < 0) {
-          p.x -= 0.1;
+          p.x -= 0.01;
         }
-        p.x += 0.1;
-      }
+        p.x += 0.01;
 
-      if (p.originalZ > rangeZ.min && p.originalZ < rangeZ.max) {
         if (p.x < rangeX.min || rangeX.max < p.x) {
           p.x = p.originalX;
         }
       }
     });
 
-    if (Math.random() > 0.7) {
-      if (pointLight.power < 100) {
+    if (isLightning || Math.random() > 0.8) {
+      if (isLightning || pointLight.power < 100) {
         pointLight.position.set(
           Math.random() * 400,
           Math.random() * 200 + 300,
           100,
         );
       }
-      pointLight.power = Math.random() * 500 + 50;
+      pointLight.power = Math.random() * 500 + (isLightning ? 500 : 50);
     }
 
     renderer.render(scene, camera);
