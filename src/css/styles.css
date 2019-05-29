@@ -41,7 +41,7 @@ button {
   position: absolute;
   top: 0;
   right: 0;
-  padding: 10px 20px;
+  padding: 15px 20px;
 }
 
 .btn_audio {
@@ -54,4 +54,5 @@ button {
 
 .img_audio {
   width: 100%;
+  user-select: none;
 }
