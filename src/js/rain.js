@@ -241,9 +241,20 @@ class Rain {
     if (!audio.muted) {
       const currentTime = audio.currentTime;
       const duration = audio.duration;
+      const percent = currentTime / duration;
       
-      if (currentTime / duration > 0.9) {
-        audio.currentTime = 0;
+      if (percent > 0.8) {
+        if (audio.volume > 0.5) {
+          audio.volume -= 0.01;
+        }
+      } else {
+        if (audio.volume < 0.99) {
+          audio.volume += 0.01;
+        }
+      }
+
+      if (percent > 0.9) {
+        audio.currentTime = 5;
       }
     }
   }
