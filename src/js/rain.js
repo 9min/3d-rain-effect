@@ -181,7 +181,7 @@ class Rain {
       const cloud = new THREE.Mesh(cloudGeometry, cloudMaterial);
 
       cloud.position.set(
-        Math.random() * (width + 200) - 100,
+        Math.random() * (width * 2) - width,
         400,
         Math.random() * (height + 300) - (height + 100),
       );
@@ -254,7 +254,7 @@ class Rain {
         }
       } else {
         if (audio.volume < 0.99) {
-          audio.volume += 0.01;
+          audio.volume += 0.005;
         }
       }
     }
