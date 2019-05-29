@@ -83,7 +83,7 @@ class Rain {
   initRainCount() {
     const { size: { width, height } } = this;
 
-    this.rainCount = Math.floor((width * height) / 30);
+    this.rainCount = Math.floor((width * height) / 50);
   }
 
   initScene() {
