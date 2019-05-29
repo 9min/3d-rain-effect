@@ -69,6 +69,7 @@ class Rain {
 
     this.audio = new Audio(audio);
     this.audio.loop = true;
+    this.audio.muted = true;
     this.audio.load();
   }
 
@@ -123,10 +124,11 @@ class Rain {
   }
 
   initRain() {
-    this.rainGeometry = this.getRainGeometry();
     const rainMeterial = this.getRainMeterial();
+    const rainGeometry = this.getRainGeometry();
 
-    this.rain = new THREE.Points(this.rainGeometry, rainMeterial);
+    this.rain = new THREE.Points(rainGeometry, rainMeterial);
+    this.rainGeometry = rainGeometry;
     this.scene.add(this.rain);
   }
 
@@ -197,7 +199,7 @@ class Rain {
   initRenderer() {
     const {
       scene: { fog: { color } },
-      size: { width, height }
+      size: { width, height },
     } = this;
 
     this.renderer = new THREE.WebGLRenderer();
@@ -210,17 +212,19 @@ class Rain {
   }
 
   mute(isMute) {
-    if (this.audio.currentTime === 0) {
-      const promise = this.audio.play();
+    const { audio } = this;
+
+    if (audio.currentTime === 0) {
+      const promise = audio.play();
 
       if (!promise) {
         promise
-          .then(() => this.audio.play())
+          .then(() => audio.play())
           .catch(err => console.error(err));
       }
     }
 
-    this.audio.muted = isMute ? true : false;
+    audio.muted = isMute ? true : false;
   }
 
   lightning() {
@@ -229,6 +233,19 @@ class Rain {
     }
 
     this.lightningTimer = setTimeout(() => this.lightningTimer = null, 1000);
+  }
+
+  checkAudioLoop() {
+    const { audio } = this;
+
+    if (!audio.muted) {
+      const currentTime = audio.currentTime;
+      const duration = audio.duration;
+      
+      if (currentTime / duration > 0.9) {
+        audio.currentTime = 0;
+      }
+    }
   }
 
   animate() {
@@ -278,6 +295,9 @@ class Rain {
 
     renderer.render(scene, camera);
     
-    requestAnimationFrame(() => this.animate());
+    requestAnimationFrame(() => {
+      this.checkAudioLoop();
+      this.animate();
+    });
   }
 }
