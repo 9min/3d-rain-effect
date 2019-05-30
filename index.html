@@ -21,50 +21,52 @@
     </main>
     <script src="src/js/rain.js"></script>
     <script>
-      const rain = new Rain({
-        target: document.querySelector('#app'),
-        resources: {
-          cloud: 'src/images/cloud.png',
-          drop: 'src/images/drop.png',
-          audio: 'src/sounds/rain.wav',
-        },
-      });
-      const mobileKeyWords = [
-        'iPhone',
-        'iPod',
-        'BlackBerry',
-        'Android',
-        'Windows CE',
-        'LG',
-        'MOT',
-        'SAMSUNG',
-        'SonyEricsson',
-        'Windows Phone',
-      ];
-      let eventName = 'click';
+      setTimeout(() => {
+        const rain = new Rain({
+          target: document.querySelector('#app'),
+          resources: {
+            cloud: 'src/images/cloud.png',
+            drop: 'src/images/drop.png',
+            audio: 'src/sounds/rain.wav',
+          },
+        });
+        const mobileKeyWords = [
+          'iPhone',
+          'iPod',
+          'BlackBerry',
+          'Android',
+          'Windows CE',
+          'LG',
+          'MOT',
+          'SAMSUNG',
+          'SonyEricsson',
+          'Windows Phone',
+        ];
+        let eventName = 'click';
 
-      for (let word in mobileKeyWords) {
-        if (navigator.userAgent.match(mobileKeyWords[word])) {
-          eventName = 'touchend';
+        for (let word in mobileKeyWords) {
+          if (navigator.userAgent.match(mobileKeyWords[word])) {
+            eventName = 'touchend';
+          }
         }
-      }
 
-      const btnAudioOn = document.querySelector('#btnAudioOn');
-      const btnAudioOff = document.querySelector('#btnAudioOff');
+        const btnAudioOn = document.querySelector('#btnAudioOn');
+        const btnAudioOff = document.querySelector('#btnAudioOff');
 
-      btnAudioOn.addEventListener(eventName, (evt) => {
-        rain.mute(true);
-        btnAudioOn.classList.add('hide');
-        btnAudioOff.classList.remove('hide');
-        evt.stopPropagation();
-      });
+        btnAudioOn.addEventListener(eventName, (evt) => {
+          rain.mute(true);
+          btnAudioOn.classList.add('hide');
+          btnAudioOff.classList.remove('hide');
+          evt.stopPropagation();
+        });
 
-      btnAudioOff.addEventListener(eventName, (evt) => {
-        rain.mute(false);
-        btnAudioOn.classList.remove('hide');
-        btnAudioOff.classList.add('hide');
-        evt.stopPropagation();
-      });
+        btnAudioOff.addEventListener(eventName, (evt) => {
+          rain.mute(false);
+          btnAudioOn.classList.remove('hide');
+          btnAudioOff.classList.add('hide');
+          evt.stopPropagation();
+        });
+      }, 500);
     </script>
   </body>
 </html>
