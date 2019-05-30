@@ -335,7 +335,7 @@ class Rain {
       }
     });
 
-    if (isLightning || Math.random() > 0.7) {
+    if (isLightning || Math.random() > 0.8) {
       if (isLightning || pointLight.power < 100) {
         pointLight.position.set(
           Math.random() * width - (width / 2),
