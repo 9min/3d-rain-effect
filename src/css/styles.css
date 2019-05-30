@@ -45,11 +45,11 @@ button {
 }
 
 .btn_audio {
-  width: 30px;
-  height: 30px;
+  width: 34px;
+  height: 34px;
   text-indent: -9999px;
   font-size: 1px;
-  opacity: 0.3;
+  opacity: 0.5;
   background-size: contain;
   background-repeat: no-repeat;
   overflow: hidden;
