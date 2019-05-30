@@ -185,7 +185,7 @@ class Rain {
       size: { width, height },
       resources: { cloud },
     } = this;
-    const cloudLength = Math.floor((width * height) / 8000);
+    const cloudLength = Math.floor((width * height) / 10000);
     const cloudGeometry = new THREE.PlaneBufferGeometry(400, 400);
     const cloudMaterial = new THREE.MeshLambertMaterial({
       map: this.loader.load(cloud),
@@ -196,15 +196,15 @@ class Rain {
       const cloud = new THREE.Mesh(cloudGeometry, cloudMaterial);
 
       cloud.position.set(
-        Math.random() * (width * 2) - width,
+        Math.random() * width - (width / 2),
         400,
-        Math.random() * (height + 300) - (height + 100),
+        Math.random() * height - (height / 2) - 100,
       );
 
       cloud.rotation.x = 1.16;
       cloud.rotation.y = -0.12;
       cloud.rotation.z = Math.random() * 360;
-      cloud.material.opacity = 0.7;
+      cloud.material.opacity = 0.8;
 
       this.cloudParticles.push(cloud);
       this.scene.add(cloud);
