@@ -7,11 +7,12 @@ class Rain {
     };
     this.resources = { cloud, drop, audio };
     this.color = {
-      fog: 0x000000,
+      fog: 0x111111,
       drop: 0xffeeee,
       ambientLight: 0x333333,
       directionalLight: 0xffeedd,
-      pointLight: 0x042680,
+      pointLight1: 0x04267e,
+      pointLight2: 0x7488fe,
     };
     this.isMobile = false;
     this.audio = null;
@@ -25,6 +26,8 @@ class Rain {
     this.ambientLight = null;
     this.directionalLight = null;
     this.pointLight = null;
+    this.pointLight1 = null;
+    this.pointLight2 = null;
     this.renderer = null;
     this.lightningTimer = null;
 
@@ -41,7 +44,7 @@ class Rain {
     this.initLoader();
     this.initAmbientLight();
     this.initDirectionalLight();
-    this.initPointLight();
+    this.initpointLight();
     this.initRain();
     this.initCloud();
     this.initRenderer();
@@ -96,7 +99,7 @@ class Rain {
 
   initScene() {
     this.scene = new THREE.Scene();
-    this.scene.fog = new THREE.FogExp2(this.color.fog, 0.0002);
+    this.scene.fog = new THREE.FogExp2(this.color.fog, 0.0005);
   }
 
   initCamera() {
@@ -124,10 +127,12 @@ class Rain {
     this.scene.add(this.directionalLight);
   }
 
-  initPointLight() {
-    this.pointLight = new THREE.PointLight(this.color.pointLight, 30, 600, 2);
-    this.pointLight.position.set(200, 300, 100);
-    this.scene.add(this.pointLight);
+  initpointLight() {
+    this.pointLight1 = new THREE.PointLight(this.color.pointLight1, 30, 500, 2);
+    this.pointLight2 = new THREE.PointLight(this.color.pointLight2, 20, 500, 1.5);
+    this.pointLight = this.pointLight1;
+    this.scene.add(this.pointLight1);
+    this.scene.add(this.pointLight2);
   }
 
   initRain() {
@@ -170,7 +175,7 @@ class Rain {
       map: this.loader.load(drop),
       depthTest: false,
       blending: THREE.AdditiveBlending,
-      opacity: 1,
+      opacity: 0.7,
       transparent: true,
     });
   }
@@ -180,7 +185,7 @@ class Rain {
       size: { width, height },
       resources: { cloud },
     } = this;
-    const cloudLength = Math.floor((width * height) / 10000);
+    const cloudLength = Math.floor((width * height) / 8000);
     const cloudGeometry = new THREE.PlaneBufferGeometry(400, 400);
     const cloudMaterial = new THREE.MeshLambertMaterial({
       map: this.loader.load(cloud),
@@ -199,7 +204,7 @@ class Rain {
       cloud.rotation.x = 1.16;
       cloud.rotation.y = -0.12;
       cloud.rotation.z = Math.random() * 360;
-      cloud.material.opacity = 0.8;
+      cloud.material.opacity = 0.7;
 
       this.cloudParticles.push(cloud);
       this.scene.add(cloud);
@@ -243,6 +248,7 @@ class Rain {
     }
 
     this.lightningTimer = setTimeout(() => this.lightningTimer = null, 1000);
+    this.changePointLight(true);
   }
 
   checkAudioLoop() {
@@ -270,8 +276,29 @@ class Rain {
     }
   }
 
+  changePointLight(isShining) {
+    const { pointLight1, pointLight2 } = this;
+    let random = Math.random();
+
+    if (isShining) {
+      this.pointLight = pointLight1;
+      random = 1;
+    }
+
+    if (random > 0.95) {
+      if (random > 0.98 && this.pointLight === pointLight1) {
+        this.pointLight = pointLight2;
+        pointLight1.power = 0;
+      } else {
+        this.pointLight = pointLight1;
+        pointLight2.power = 0;
+      }
+    }
+  }
+
   animate() {
     const {
+      size: { width, height },
       cloudParticles,
       rainGeometry,
       pointLight,
@@ -280,6 +307,10 @@ class Rain {
       camera,
     } = this;
     const isLightning = !!this.lightningTimer;
+
+    if (!isLightning) {
+      this.changePointLight();
+    }
 
     cloudParticles.forEach((v) => {
       v.rotation.z -= 0.001;
@@ -304,15 +335,15 @@ class Rain {
       }
     });
 
-    if (isLightning || Math.random() > 0.8) {
+    if (isLightning || Math.random() > 0.7) {
       if (isLightning || pointLight.power < 100) {
         pointLight.position.set(
-          Math.random() * 400,
-          Math.random() * 200 + 300,
-          100,
+          Math.random() * width - (width / 2),
+          Math.random() * height,
+          0,
         );
       }
-      pointLight.power = Math.random() * 500 + (isLightning ? 500 : 50);
+      pointLight.power = Math.random() * 500 + (isLightning ? 100 : 50);
     }
 
     renderer.render(scene, camera);
