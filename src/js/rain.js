@@ -6,6 +6,13 @@ class Rain {
       height: Math.min(target.clientHeight, 1000),
     };
     this.resources = { cloud, drop, audio };
+    this.color = {
+      fog: 0x000000,
+      drop: 0xffeeee,
+      ambientLight: 0x333333,
+      directionalLight: 0xffeedd,
+      pointLight: 0x042680,
+    };
     this.isMobile = false;
     this.audio = null;
     this.cloudParticles = [];
@@ -89,7 +96,7 @@ class Rain {
 
   initScene() {
     this.scene = new THREE.Scene();
-    this.scene.fog = new THREE.FogExp2(0x222233, 0.0015);
+    this.scene.fog = new THREE.FogExp2(this.color.fog, 0.0002);
   }
 
   initCamera() {
@@ -107,18 +114,18 @@ class Rain {
   }
 
   initAmbientLight() {
-    this.ambientLight = new THREE.AmbientLight(0x666666);
+    this.ambientLight = new THREE.AmbientLight(this.color.ambientLight);
     this.scene.add(this.ambientLight);
   }
 
   initDirectionalLight() {
-    this.directionalLight = new THREE.DirectionalLight(0xffeedd);
+    this.directionalLight = new THREE.DirectionalLight(this.color.directionalLight);
     this.directionalLight.position.set(0, 0, 1);
     this.scene.add(this.directionalLight);
   }
 
   initPointLight() {
-    this.pointLight = new THREE.PointLight(0x062d89, 30, 500, 1.7);
+    this.pointLight = new THREE.PointLight(this.color.pointLight, 30, 600, 2);
     this.pointLight.position.set(200, 300, 100);
     this.scene.add(this.pointLight);
   }
@@ -152,10 +159,13 @@ class Rain {
   }
 
   getRainMeterial() {
-    const { resources: { drop } } = this;
+    const {
+      resources: { drop },
+      color,
+    } = this;
 
     return new THREE.PointsMaterial({
-      color: 0xaaaaaa,
+      color: color.drop,
       size: 1,
       map: this.loader.load(drop),
       depthTest: false,
@@ -272,7 +282,7 @@ class Rain {
     const isLightning = !!this.lightningTimer;
 
     cloudParticles.forEach((v) => {
-      v.rotation.z -= 0.002;
+      v.rotation.z -= 0.001;
     });
 
     rainGeometry.verticesNeedUpdate = true;
@@ -280,7 +290,7 @@ class Rain {
       const rangeY = { min: Math.random() * 200 - 340, max: 200 };
       const rangeZ = { min: -50, max: 10 };
 
-      p.velocity -= 0.5;
+      p.velocity -= 0.4;
 
       if (rangeZ.min < p.originalZ && p.originalZ < rangeZ.max) {
         p.y += p.velocity / 2;
