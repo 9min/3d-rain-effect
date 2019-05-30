@@ -45,13 +45,15 @@ button {
 }
 
 .btn_audio {
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   text-indent: -9999px;
   font-size: 1px;
+  opacity: 0.3;
   background-size: contain;
   background-repeat: no-repeat;
   overflow: hidden;
+  -webkit-tap-highlight-color: rgba(255,255,255,0);
   -webkit-touch-callout:none;
   -webkit-user-select:none;
   -khtml-user-select:none;
